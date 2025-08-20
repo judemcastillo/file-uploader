@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  files        File[]
+  folders      Folder[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  sid       String   @unique @db.VarChar(255)
+  data      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model File {
+  id           Int       @id @default(autoincrement())
+  originalName String
+  // local-only fields become optional now
+  filename     String?
+  path         String?
+
+  // cloud fields
+  url          String?   // secure URL from Cloudinary
+  publicId     String?   // e.g. "file_uploader/abc123"
+  resourceType String?   // "image" | "raw" | "video"
+  mimetype     String
+  size         Int
+  createdAt    DateTime  @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int
+
+  folder   Folder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  folderId Int?
+}
+
+model Folder {
+  id        Int       @id @default(autoincrement())
+  name      String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  parent    Folder?   @relation("FolderToFolder", fields: [parentId], references: [id])
+  parentId  Int?
+  children  Folder[]  @relation("FolderToFolder")
+  files     File[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}

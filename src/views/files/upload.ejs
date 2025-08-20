@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8"><title>Upload</title></head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+    </nav>
+    <h2>Upload a file</h2>
+    <% if (error) { %><p style="color:red"><%= error %></p><% } %>
+    <form action="/files/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" required><br>
+      <button type="submit">Upload</button>
+    </form>
+  </body>
+</html>

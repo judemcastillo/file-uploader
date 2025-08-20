@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8"><title>Register</title></head>
+  <body>
+    <h2>Register</h2>
+
+    <% if (errors && errors.length) { %>
+      <ul style="color:red">
+        <% errors.forEach(m => { %><li><%= m %></li><% }) %>
+      </ul>
+    <% } %>
+
+    <form action="/register" method="post" novalidate>
+      <label>Email
+        <input type="email" name="email" required value="<%= (values && values.email) || '' %>">
+      </label><br>
+      <label>Password
+        <input type="password" name="password" required>
+      </label><br>
+      <label>Confirm password
+        <input type="password" name="confirmPassword" required>
+      </label><br>
+      <button type="submit">Create account</button>
+    </form>
+
+    <p><a href="/login">Already have an account?</a></p>
+  </body>
+</html>
