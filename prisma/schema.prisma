@@ -1,9 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,10 +13,73 @@ model User {
   email        String   @unique
   passwordHash String
   createdAt    DateTime @default(now())
-  files        File[]
-  folders      Folder[]
+
+  files   File[]
+  folders Folder[]
 }
 
+model Folder {
+  id        Int      @id @default(autoincrement())
+  name      String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  parent    Folder?  @relation("FolderToFolder", fields: [parentId], references: [id])
+  parentId  Int?
+  children  Folder[] @relation("FolderToFolder")
+  files     File[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Back relation for share links
+  shareLinks ShareLink[] @relation("FolderShareLinks")
+}
+
+model File {
+  id           Int    @id @default(autoincrement())
+  originalName String
+
+  // Local-disk fields (optional if using Cloudinary)
+  filename String?
+  path     String?
+
+  // Cloudinary fields (optional)
+  url          String?
+  publicId     String?
+  resourceType String?
+
+  mimetype  String
+  size      Int
+  createdAt DateTime @default(now())
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  folder   Folder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  folderId Int?
+
+  // Back relation for share links
+  shareLinks ShareLink[] @relation("FileShareLinks")
+}
+
+model ShareLink {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Optional link to a file
+  file   File? @relation("FileShareLinks", fields: [fileId], references: [id], onDelete: Cascade)
+  fileId Int?
+
+  // Optional link to a folder
+  folder   Folder? @relation("FolderShareLinks", fields: [folderId], references: [id], onDelete: Cascade)
+  folderId Int?
+
+  @@index([fileId])
+  @@index([folderId])
+}
+
+// Required by @quixo3/prisma-session-store
 model Session {
   id        String   @id @default(cuid())
   sid       String   @unique @db.VarChar(255)
@@ -29,39 +87,4 @@ model Session {
   expiresAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model File {
-  id           Int       @id @default(autoincrement())
-  originalName String
-  // local-only fields become optional now
-  filename     String?
-  path         String?
-
-  // cloud fields
-  url          String?   // secure URL from Cloudinary
-  publicId     String?   // e.g. "file_uploader/abc123"
-  resourceType String?   // "image" | "raw" | "video"
-  mimetype     String
-  size         Int
-  createdAt    DateTime  @default(now())
-
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  Int
-
-  folder   Folder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
-  folderId Int?
-}
-
-model Folder {
-  id        Int       @id @default(autoincrement())
-  name      String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  parent    Folder?   @relation("FolderToFolder", fields: [parentId], references: [id])
-  parentId  Int?
-  children  Folder[]  @relation("FolderToFolder")
-  files     File[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
 }

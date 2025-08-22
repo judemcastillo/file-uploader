@@ -1,0 +1,13 @@
+<nav style="margin-bottom:8px;">
+  <a href="/">My Drive</a>
+  <% if (breadcrumbs && breadcrumbs.length) { %>
+    <% breadcrumbs.forEach(function(c, i) { %>
+      &nbsp;/&nbsp;
+      <% if (i < breadcrumbs.length - 1) { %>
+        <a href="/folders/<%= c.id %>"><%= c.name %></a>
+      <% } else { %>
+        <strong><%= c.name %></strong>
+      <% } %>
+    <% }) %>
+  <% } %>
+</nav>

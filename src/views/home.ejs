@@ -1,22 +1,4 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<title><%= title %></title>
-	</head>
-	<body>
-		<nav>
-			<a href="/">Home</a>
-			<% if (currentUser) { %> | Logged in as <%= currentUser.email %>
-			<form action="/logout" method="post" style="display: inline">
-				<button type="submit">Logout</button>
-			</form>
-			<% } else { %> | <a href="/login">Login</a> |
-			<a href="/register">Register</a>
-			<% } %>
-		</nav>
-		<hr />
-		<h1>Welcome</h1>
-		<% if (currentUser) { %> | <a href="/files/upload">Upload</a> <% } %>
-	</body>
-</html>
+<%- include('partials/header', { title: 'Dashboard' }) %>
+
+<h1>Welcome</h1>
+<h3>To Fake/Drive</h3>

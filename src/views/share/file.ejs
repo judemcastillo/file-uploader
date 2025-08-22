@@ -1,0 +1,4 @@
+<%- include('../partials/header') %>
+<h2><%= file.originalName %></h2>
+<p>Type: <%= file.mimetype %> • Size: <%= (file.size/1024).toFixed(1) %> KB</p>
+<p><a href="/s/<%= token %>/download">Download</a></p>

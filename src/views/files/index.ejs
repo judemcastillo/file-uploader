@@ -1,0 +1,31 @@
+<%- include('../partials/header', { title: 'Dashboard' }) %>
+
+<h2>My Files</h2>
+<table border="1" cellpadding="6">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Folder Location</th>
+			<th>Size (KB)</th>
+			<th>Uploaded</th>
+			<th>Open</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% files.forEach(f => { %>
+		<tr>
+			<td><a href="/files/<%= f.id %>"><%= f.originalName %></a></td>
+			<td><%= f.folder ? f.folder.name : "(none)" %></td>
+			<td><%= (f.size / 1024).toFixed(1) %></td>
+			<td><%= new Date(f.createdAt).toLocaleString() %></td>
+			<td>
+				<% if (f.url) { %>
+				<a href="<%= f.url %>" target="_blank">open</a>
+				<% } else { %>
+				<a href="/files/<%= f.id %>/download">download</a>
+				<% } %>
+			</td>
+		</tr>
+		<% }) %>
+	</tbody>
+</table>

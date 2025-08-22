@@ -1,0 +1,29 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+	font-family: system-ui, sans-serif;
+	margin: 2rem auto;
+	max-width: 800px;
+}
+li{
+    list-style: none;
+}
+.folders{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: rgb(230, 230, 230);
+    border: none;
+    border-radius: 0.5rem;
+}
+.foldersList{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}

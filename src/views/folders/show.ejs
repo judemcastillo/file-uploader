@@ -1,0 +1,67 @@
+<%- include('../partials/header', { title: 'Dashboard' }) %> <%-
+include('../partials/breadcrumb', { breadcrumbs }) %>
+
+<h2><%= folder.name %></h2>
+
+<hr />
+<ul class="foldersList">
+	<h3 style="margin-top: 1rem">Folders</h3>
+	<% folder.children.forEach(c => { %>
+	<li class="folders"><a href="/folders/<%= c.id %>"><%= c.name %></a></li>
+	<% }) %> <%- include('../partials/new_folder_button', { parentId: folder.id,
+	error }) %>
+</ul>
+<hr />
+
+<ul>
+	<h3>Files</h3>
+	<% folder.files.forEach(file => { %>
+	<li>
+		<a href="/files/<%= file.id %>"><%= file.originalName %></a>
+		<!-- Share button -->
+		<form action="/share" method="post" style="display: inline">
+			<input type="hidden" name="type" value="file" />
+			<input type="hidden" name="id" value="<%= file.id %>" />
+			<input type="hidden" name="duration" value="1d" />
+			<button type="submit">Share</button>
+		</form>
+
+			<!-- Delete button -->
+			<form
+				action="/files/<%= file.id %>/delete"
+				method="post"
+				style="display: inline"
+				onsubmit="return confirm('Delete this file?');"
+			>
+				<button>Delete</button>
+			</form>
+		</form>
+	</li>
+	<% }) %>
+</ul>
+<hr />
+
+<h3>Upload here</h3>
+<% if (error) { %>
+<p style="color: red"><%= error %></p>
+<% } %>
+<form action="/files/upload" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="folderId" value="<%= folder.id %>" />
+	<input type="file" name="file" required />
+	<button type="submit">Upload to "<%= folder.name %>"</button>
+</form>
+<hr />
+
+<h3>Rename Folder</h3>
+<form action="/folders/<%= folder.id %>/rename" method="post">
+	<input type="text" name="name" value="<%= folder.name %>" required />
+	<button type="submit">Rename</button>
+</form>
+
+<form
+	action="/folders/<%= folder.id %>/delete"
+	method="post"
+	style="margin-top: 1rem"
+>
+	<button>Delete Folder</button>
+</form>

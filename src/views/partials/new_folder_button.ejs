@@ -1,0 +1,40 @@
+<div style="margin: 8px 0">
+	<button type="button" onclick="toggleNewFolder('<%= parentId || "root" %>')">
+		Add folder
+	</button>
+
+	<form
+		id="new-folder-form-<%= parentId || 'root' %>"
+		action="/folders"
+		method="post"
+		style="display: none; margin-top: 8px"
+	>
+		<% if (parentId) { %>
+		<input type="hidden" name="parentId" value="<%= parentId %>" />
+		<% } %>
+
+		<input type="text" name="name" placeholder="Folder name" required />
+		<button type="submit">Add folder</button>
+		<button
+			type="button"
+			onclick="toggleNewFolder('<%= parentId || 'root' %>')"
+		>
+			Cancel
+		</button>
+
+		<% if (error) { %>
+		<div style="color: red; margin-top: 6px"><%= error %></div>
+		<% } %>
+	</form>
+</div>
+<script>
+	function toggleNewFolder(key) {
+		var f = document.getElementById("new-folder-form-" + key);
+		var show = f.style.display === "none" || f.style.display === "";
+		f.style.display = show ? "block" : "none";
+		if (show) {
+			var input = f.querySelector('input[name="name"]');
+			if (input) input.focus();
+		}
+	}
+</script>

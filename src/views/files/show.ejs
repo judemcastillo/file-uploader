@@ -1,17 +1,29 @@
-<!DOCTYPE html>
-<html>
-  <head><meta charset="utf-8"><title>File</title></head>
-  <body>
-    <nav>
-      <a href="/">Home</a> | <a href="/files/upload">Upload another</a>
-    </nav>
-    <h2>File details</h2>
-    <ul>
-      <li>Name: <%= file.originalName %></li>
-      <li>Type: <%= file.mimetype %></li>
-      <li>Size: <%= (file.size / 1024).toFixed(1) %> KB</li>
-      <li>Uploaded: <%= new Date(file.createdAt).toLocaleString() %></li>
-    </ul>
-    <p><a href="/files/<%= file.id %>/download">Download</a></p>
-  </body>
-</html>
+<%- include('../partials/header', { title: 'Dashboard' }) %>
+
+<h2>File: <%= file.originalName %></h2>
+<ul>
+	<li>Type: <%= file.mimetype %></li>
+	<li>Size: <%= (file.size / 1024).toFixed(1) %> KB</li>
+	<li>Uploaded: <%= new Date(file.createdAt).toLocaleString() %></li>
+	<li>Folder: <%= file.folder ? file.folder.name : "(My Drive)" %></li>
+	<% if (file.url) { %>
+	<li>URL: <a href="<%= file.url %>" target="_blank">open</a></li>
+	<% } %>
+</ul>
+
+<p><a href="/files/<%= file.id %>/download">Download</a></p>
+
+<h3>Rename</h3>
+<form action="/files/<%= file.id %>/rename" method="post">
+	<input type="text" name="newName" value="<%= file.originalName %>" required />
+	<button>Rename</button>
+</form>
+
+<h3>Delete</h3>
+<form
+	action="/files/<%= file.id %>/delete"
+	method="post"
+	onsubmit="return confirm('Delete this file?');"
+>
+	<button>Delete</button>
+</form>
